@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -38,7 +39,6 @@ import static android.content.ContentValues.TAG;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -46,14 +46,18 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mFireBaseAuth;
     private FirebaseUser mFireBaseUser;
-    private String mUsername, mPhotoUrl;
+    FirebaseFirestore mFirebasefirestore = null;
+
+
     private RecyclerView mRecyclerView;
     RecyclerView.Adapter adapter;
-    EditText messageText;
-    ArrayList<String> messages = new ArrayList<>();
-    FirebaseFirestore mFirebasefirestore = null;
     Button send;
+    EditText sendMessageText;
 
+    DocumentData documentData;
+    MessageContainer messageContainer;
+
+    ArrayList<MessageContainer> messageContainerArrayList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +66,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        messageText = findViewById(R.id.message);
+        sendMessageText = findViewById(R.id.send_message_text);
+
         send = findViewById(R.id.send);
         mRecyclerView = findViewById(R.id.recycler_view);
 
@@ -75,14 +80,10 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
         else {
-            //Toast.makeText(this, mFireBaseUser.getDisplayName(), Toast.LENGTH_SHORT).show();
-            mUsername = mFireBaseUser.getDisplayName();
-            mPhotoUrl = mFireBaseUser.getPhotoUrl().toString();
-            //initialize firestore and add user to db.
-
             mFirebasefirestore = FirebaseFirestore.getInstance();
-            getData();
+            firebaseListener();
         }
+
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,14 +92,29 @@ public class MainActivity extends AppCompatActivity {
                     sendMessage();
             }
         });
-//        mRecyclerView = findViewById(R.id.recycler_view);
-//        adapter = new FireBaseRecyclerAdapter(this, messages, mFireBaseUser, "sad");
-//        mRecyclerView.setAdapter(adapter);
-
-
     }
 
+    private void firebaseListener()
+    {
+        CollectionReference collectionReference = mFirebasefirestore.collection("messages");
+        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                if (e != null)
+                    Log.w(TAG, "Listen failed.", e);
+
+//                String source = queryDocumentSnapshots != null && queryDocumentSnapshots.getMetadata().hasPendingWrites()
+//                        ? "Local" : "Server";
+
+                if(!queryDocumentSnapshots.isEmpty())
+                    getData();
+            }
+        });
+    }
     private void getData() {
+
+        documentData = new DocumentData();
+        documentData.setMessage(messageContainerArrayList);
         mFirebasefirestore.collection("messages").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @SuppressLint("WrongConstant")
             @Override
@@ -108,44 +124,35 @@ public class MainActivity extends AppCompatActivity {
                 else
                 {
                     List<DocumentSnapshot> docList = queryDocumentSnapshots.getDocuments();
-                    for (DocumentSnapshot documentSnapshot : docList)
-                        messages.add(documentSnapshot.get("message").toString());
+                    documentData.clearData();
+                    for (DocumentSnapshot documentSnapshot : docList) {
+                        messageContainer = new MessageContainer();
+                        messageContainer.setMessage(documentSnapshot.get("message").toString());
+                        messageContainer.setName(documentSnapshot.get("name").toString());
+                        //messageContainer.setTimeStamp(documentSnapshot.getTimestamp("timeStamp").toDate());
 
-                    adapter = new FireBaseRecyclerAdapter(MainActivity.this, messages, mFireBaseUser, "sad");
+                        documentData.addMessage(messageContainer);
+
+                    }
+                    adapter = new FireBaseRecyclerAdapter(MainActivity.this, documentData.getMessage());
                     mRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
                     mRecyclerView.setAdapter(adapter);
                 }
             }
         });
-
-
-//        mFirebasefirestore.collection("messages").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if(task.isSuccessful())
-//                {
-//                    List<DocumentSnapshot> docList = task.getResult().getDocuments();
-//                    for(DocumentSnapshot doc : docList)
-//                    {
-//                        messages.add((String) doc.get("message"));
-//                    }
-//                }
-//            }
-//        });
     }
 
     private void sendMessage() {
         Map<String, String> user = new HashMap<>();
-        user.put("name", mUsername);
-        user.put("message", messageText.getText().toString());
-
+        user.put("message", sendMessageText.getText().toString());
+        user.put("name", mFireBaseUser.getDisplayName());
+        sendMessageText.setText(null);
         mFirebasefirestore.collection("messages")
             .add(user)
             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                 @Override
                 public void onSuccess(DocumentReference documentReference) {
-                    updateList(mFirebasefirestore);
-                    //messages.add(messageText.getText().toString());
+                    getData();
                     Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
                 }
             })
@@ -169,8 +176,8 @@ public class MainActivity extends AppCompatActivity {
                 for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
                     switch (dc.getType()) {
                         case ADDED:
-                            if(!messages.contains(dc.getDocument().getId()))
-                                messages.add(dc.getDocument().get("message").toString());
+//                            if(!messages.contains(dc.getDocument().getId()))
+//                                messages.add(dc.getDocument().get("message").toString());
 
                             Log.d("TAG", "New Msg: " + dc.getDocument().toObject(Message.class));
                             break;
@@ -182,8 +189,8 @@ public class MainActivity extends AppCompatActivity {
 //                            break;
                     }
                 }
-                adapter = new FireBaseRecyclerAdapter(MainActivity.this, messages, mFireBaseUser, "sad");
-                mRecyclerView.setAdapter(adapter);
+//                adapter = new FireBaseRecyclerAdapter(MainActivity.this, messages, names, "sad");
+//                mRecyclerView.setAdapter(adapter);
             }
         });
     }

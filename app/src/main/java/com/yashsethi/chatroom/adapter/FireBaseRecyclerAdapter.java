@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.yashsethi.chatroom.DocumentData;
+import com.yashsethi.chatroom.MessageContainer;
 import com.yashsethi.chatroom.R;
 
 import java.util.ArrayList;
@@ -21,17 +23,13 @@ import static android.content.ContentValues.TAG;
 
 public class FireBaseRecyclerAdapter extends RecyclerView.Adapter<FireBaseRecyclerAdapter.ViewHolder> {
 
-    ArrayList<String> message;
-    FirebaseUser name;
-    String image;
+    ArrayList<MessageContainer> messageContainerArrayList;
     Context context;
 
-    public FireBaseRecyclerAdapter(Context context, ArrayList<String> message, FirebaseUser name, String image) {
+    public FireBaseRecyclerAdapter(Context context, ArrayList<MessageContainer> messageContainerArrayList) {
         super();
         this.context = context;
-        this.message = message;
-        this.name = name;
-        this.image = image;
+        this.messageContainerArrayList = messageContainerArrayList;
     }
     @NonNull
     @Override
@@ -44,15 +42,15 @@ public class FireBaseRecyclerAdapter extends RecyclerView.Adapter<FireBaseRecycl
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.MessageText.setText(message.get(position));
-        holder.NameText.setText(name.getDisplayName());
+        holder.MessageText.setText(messageContainerArrayList.get(position).getMessage());
+        holder.NameText.setText(messageContainerArrayList.get(position).getName());
         //holder.Image.setImageResource(image.get(position));
         //Use glide.
     }
 
     @Override
     public int getItemCount() {
-        return message.size();
+        return messageContainerArrayList.size();
     }
 
       class ViewHolder extends RecyclerView.ViewHolder {
