@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "342398046181",
+    "firebase_url": "https://chatroom-418af.firebaseio.com",
+    "project_id": "chatroom-418af",
+    "storage_bucket": "chatroom-418af.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:342398046181:android:6b9cc409440d98582de90c",
+        "android_client_info": {
+          "package_name": "com.yashsethi.chatroom"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "342398046181-n6kgev47u5oi0tov0dbqqpir6vpccfg0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA88fV5_Tof51a12VZ00QixkWYJkLWZjI4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "342398046181-n6kgev47u5oi0tov0dbqqpir6vpccfg0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
