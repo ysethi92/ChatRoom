@@ -1,11 +1,10 @@
-package com.yashsethi.chatroom;
-
-import java.util.Date;
+package com.yashsethi.chatroom.bean;
 
 public class MessageContainer {
     String message;
     String name;
     String timeStamp;
+    String image;
 
     public String getImage() {
         return image;
@@ -14,8 +13,6 @@ public class MessageContainer {
     public void setImage(String image) {
         this.image = image;
     }
-
-    String image;
 
     public String getMessage() {
         return message;

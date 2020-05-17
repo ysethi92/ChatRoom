@@ -1,4 +1,4 @@
-package com.yashsethi.chatroom;
+package com.yashsethi.chatroom.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -20,6 +20,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.yashsethi.chatroom.R;
 
 import static android.content.ContentValues.TAG;
 

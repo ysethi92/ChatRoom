@@ -34,13 +34,31 @@
             android:layout_height="wrap_content"
             android:text="Hello, How are you?" />
 
-        <TextView
-            android:id="@+id/name"
-            android:textSize="15sp"
-            android:padding="8dp"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Yash" />
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/name"
+                android:textSize="15sp"
+                android:padding="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Yash"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/timeStamp"
+                android:textSize="15sp"
+                android:padding="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Yash"
+                android:layout_weight="1"
+                android:gravity="right" />
+        </LinearLayout>
     </LinearLayout>
 
 

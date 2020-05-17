@@ -1,4 +1,4 @@
-package com.yashsethi.chatroom;
+package com.yashsethi.chatroom.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -33,14 +33,17 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.yashsethi.chatroom.R;
 import com.yashsethi.chatroom.adapter.FireBaseRecyclerAdapter;
-
-import static android.content.ContentValues.TAG;
+import com.yashsethi.chatroom.bean.DocumentData;
+import com.yashsethi.chatroom.bean.MessageContainer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static android.content.ContentValues.TAG;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -145,10 +148,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendMessage() {
         Map<String, String> user = new HashMap<>();
-        Long ts = System.currentTimeMillis()/1000;
+        long ts = System.currentTimeMillis();
         user.put("message", sendMessageText.getText().toString());
         user.put("name", mFireBaseUser.getDisplayName());
-        user.put("timeStamp", ts.toString());
+        user.put("timeStamp", Long.toString(ts));
         user.put("image", mFireBaseUser.getPhotoUrl().toString());
         sendMessageText.setText(null);
         mFirebasefirestore.collection("messages")
@@ -220,4 +223,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 }
