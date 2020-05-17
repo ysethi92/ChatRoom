@@ -1,6 +1,9 @@
 package com.yashsethi.chatroom;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class DocumentData {
 
@@ -22,5 +25,17 @@ public class DocumentData {
     public void addMessage(MessageContainer message)
     {
         this.messageContainer.add(message);
+    }
+
+    public void sortMessages()
+    {
+        Collections.sort(messageContainer, new SortbyTimeStamp());
+    }
+    class SortbyTimeStamp implements Comparator<MessageContainer>
+    {
+        @Override
+        public int compare(MessageContainer a, MessageContainer b) {
+            return a.timeStamp.compareTo(b.timeStamp);
+        }
     }
 }

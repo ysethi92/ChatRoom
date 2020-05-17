@@ -10,8 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseUser;
-import com.yashsethi.chatroom.DocumentData;
+import com.bumptech.glide.Glide;
 import com.yashsethi.chatroom.MessageContainer;
 import com.yashsethi.chatroom.R;
 
@@ -46,6 +45,9 @@ public class FireBaseRecyclerAdapter extends RecyclerView.Adapter<FireBaseRecycl
         holder.NameText.setText(messageContainerArrayList.get(position).getName());
         //holder.Image.setImageResource(image.get(position));
         //Use glide.
+        Glide.with(this.context)
+                .load(messageContainerArrayList.get(position).getImage())
+                .into(holder.Image);
     }
 
     @Override

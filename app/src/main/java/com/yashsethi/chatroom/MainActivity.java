@@ -106,8 +106,8 @@ public class MainActivity extends AppCompatActivity {
 //                String source = queryDocumentSnapshots != null && queryDocumentSnapshots.getMetadata().hasPendingWrites()
 //                        ? "Local" : "Server";
 
-                if(!queryDocumentSnapshots.isEmpty())
-                    getData();
+                //if(!queryDocumentSnapshots.isEmpty())
+                getData();
             }
         });
     }
@@ -129,11 +129,12 @@ public class MainActivity extends AppCompatActivity {
                         messageContainer = new MessageContainer();
                         messageContainer.setMessage(documentSnapshot.get("message").toString());
                         messageContainer.setName(documentSnapshot.get("name").toString());
-                        //messageContainer.setTimeStamp(documentSnapshot.getTimestamp("timeStamp").toDate());
-
+                        messageContainer.setTimeStamp(documentSnapshot.get("timeStamp").toString());
+                        messageContainer.setImage(documentSnapshot.get("image").toString());
                         documentData.addMessage(messageContainer);
 
                     }
+                    documentData.sortMessages();
                     adapter = new FireBaseRecyclerAdapter(MainActivity.this, documentData.getMessage());
                     mRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
                     mRecyclerView.setAdapter(adapter);
@@ -144,8 +145,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendMessage() {
         Map<String, String> user = new HashMap<>();
+        Long ts = System.currentTimeMillis()/1000;
         user.put("message", sendMessageText.getText().toString());
         user.put("name", mFireBaseUser.getDisplayName());
+        user.put("timeStamp", ts.toString());
+        user.put("image", mFireBaseUser.getPhotoUrl().toString());
         sendMessageText.setText(null);
         mFirebasefirestore.collection("messages")
             .add(user)
@@ -212,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
                     .signOut();
             //Toast.makeText(this, mFireBaseUser.getDisplayName(), Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, SignInActivity.class));
-            finish();
+            //finish();
         }
         return super.onOptionsItemSelected(item);
     }

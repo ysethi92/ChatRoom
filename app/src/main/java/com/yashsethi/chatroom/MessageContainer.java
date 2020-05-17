@@ -5,7 +5,17 @@ import java.util.Date;
 public class MessageContainer {
     String message;
     String name;
-    Date timeStamp;
+    String timeStamp;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    String image;
 
     public String getMessage() {
         return message;
@@ -23,11 +33,11 @@ public class MessageContainer {
         this.name = name;
     }
 
-    public Date getTimeStamp() {
+    public String getTimeStamp() {
         return timeStamp;
     }
 
-    public void setTimeStamp(Date timeStamp) {
+    public void setTimeStamp(String timeStamp) {
         this.timeStamp = timeStamp;
     }
 }
