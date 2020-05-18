@@ -1,16 +1,19 @@
 package com.yashsethi.chatroom.activity;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -92,7 +95,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(mFireBaseUser != null)
-                    sendMessage();
+                    if (!sendMessageText.getText().toString().isEmpty())
+                        sendMessage();
+                    else
+                        Toast.makeText(MainActivity.this, "Enter a message before sending!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -224,5 +230,26 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
 
+        LayoutInflater factory = LayoutInflater.from(this);
+        final View deleteDialogView = factory.inflate(R.layout.dialog_layout, null);
+        final AlertDialog exitDialog = new AlertDialog.Builder(this).create();
+        exitDialog.setView(deleteDialogView);
+        exitDialog.setCancelable(false);
+        deleteDialogView.findViewById(R.id.yes).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.this.finishAffinity();
+            }
+        });
+        deleteDialogView.findViewById(R.id.no).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                exitDialog.dismiss();
+            }
+        });
+        exitDialog.show();
+    }
 }

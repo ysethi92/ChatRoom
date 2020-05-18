@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ChatRoom</string>
+    <string name="do_you_want_to_exit_the_application">Do you want to exit the application?</string>
 </resources>

@@ -48,6 +48,7 @@ public class FireBaseRecyclerAdapter extends RecyclerView.Adapter<FireBaseRecycl
         holder.TimeStamp.setText(getDate(Long.parseLong(messageContainerArrayList.get(position).getTimeStamp())));
         Glide.with(this.context)
                 .load(messageContainerArrayList.get(position).getImage())
+                .centerCrop()
                 .into(holder.Image);
     }
 
